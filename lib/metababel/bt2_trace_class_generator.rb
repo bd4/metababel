@@ -578,19 +578,19 @@ module Babeltrace2Gen
       end
     end
 
-    def initialize(parent:, mappings:)
+    def initialize(parent:, mapping:)
       @parent = parent
-      @mappings = mappings.map do |mapping|
+      @mapping = mapping.map do |m|
         # Handle inheritence
-        self.class.const_get('Mapping').from_h(self, mapping)
+        self.class.const_get('Mapping').from_h(self, m)
       end
     end
 
     def get_declarator(trace_class:, variable:)
       bt_type_internal = self.class.instance_variable_get(:@bt_type_internal)
       pr "#{variable} = bt_field_class_enumeration_#{bt_type_internal}_create(#{trace_class});"
-      @mappings.each do |mapping|
-        mapping.get_declarator(field_class: variable)
+      @mapping.each do |m|
+        m.get_declarator(field_class: variable)
       end
     end
   end
